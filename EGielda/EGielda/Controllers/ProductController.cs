@@ -6,6 +6,7 @@ namespace EGielda.Controllers
     {
         public IActionResult Index()
         {
+            ViewData["ShowSidebar"] = true;
             return View();
         }
     }

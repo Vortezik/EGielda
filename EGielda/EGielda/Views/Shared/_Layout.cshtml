@@ -30,6 +30,10 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Category" asp-action="Index">Categories</a>
                             <a class="nav-link" asp-controller="Category" asp-action="Index">Categories</a>
                         </li>
                     </ul>
@@ -37,11 +41,70 @@
             </div>
         </nav>
     </header>
+
+    @if (ViewData["ShowSidebar"] as bool? == true)
+    {
+    <div class="container-fluid mt-4">
+        <div class="row">
+
+            <aside class="col-md-3 col-lg-2 mb-4">
+                 <div class="p-3 bg-white border rounded">
+
+                    <h5 class="mb-3">Search</h5>
+                    <input type="text" class="form-control mb-4" placeholder="Search products..." />
+
+                    <h5 class="mb-3">Price</h5>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox">
+                        <label class="form-check-label">Under 50 zł</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox">
+                        <label class="form-check-label">50–200 zł</label>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox">
+                        <label class="form-check-label">200+ zł</label>
+                    </div>
+
+                    <h5 class="mb-3">Categories</h5>
+                        <ul class="list-group mb-3">
+                            <a asp-controller="Category" asp-action="Index" class="text-decoration-none text-dark">
+                                <li class="list-group-item">Electronics</li>
+                            </a>
+                            <a asp-controller="Category" asp-action="Index" class="text-decoration-none text-dark">
+                                <li class="list-group-item">Clothing</li>
+                            </a>
+                            <a asp-controller="Category" asp-action="Index" class="text-decoration-none text-dark">
+                                <li class="list-group-item">Books</li>
+                            </a>
+                        </ul>
+
+                    <button class="btn btn-primary w-100">Apply Filters</button>
+
+                </div>
+            </aside>
+
+            <main class="col-md-9 col-lg-10">
+                @RenderBody()
+            </main>
+
+        </div>
     <div class="container mt-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
+    }
+    else
+    {
+        <div class="container mt-4">
+            @RenderBody()
+        </div>
+    }
 
     <footer class="border-top footer text-muted">
         <div class="container text-center py-3">
