@@ -30,11 +30,10 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">Products</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Category" asp-action="Index">Categories</a>
-                            <a class="nav-link" asp-controller="Category" asp-action="Index">Categories</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Categories</a>
                         </li>
                     </ul>
                 </div>
@@ -71,17 +70,11 @@
                     </div>
 
                     <h5 class="mb-3">Categories</h5>
-                        <ul class="list-group mb-3">
-                            <a asp-controller="Category" asp-action="Index" class="text-decoration-none text-dark">
-                                <li class="list-group-item">Electronics</li>
-                            </a>
-                            <a asp-controller="Category" asp-action="Index" class="text-decoration-none text-dark">
-                                <li class="list-group-item">Clothing</li>
-                            </a>
-                            <a asp-controller="Category" asp-action="Index" class="text-decoration-none text-dark">
-                                <li class="list-group-item">Books</li>
-                            </a>
-                        </ul>
+                        <div class="list-group mb-3">
+                            <a asp-area="" asp-controller="Category" asp-action="Index" class="list-group-item list-group-item-action"> Electronics </a>
+                            <a asp-area="" asp-controller="Category" asp-action="Index" class="list-group-item list-group-item-action"> Clothing </a>
+                            <a asp-area="" asp-controller="Category" asp-action="Index" class="list-group-item list-group-item-action"> Books </a>
+                        </div>
 
                     <button class="btn btn-primary w-100">Apply Filters</button>
 
