@@ -1,3 +1,5 @@
+using EGielda.Data;
+using Microsoft.EntityFrameworkCore;
 namespace EGielda
 {
     public class Program
@@ -8,6 +10,8 @@ namespace EGielda
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<EgieldaDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("EGieldaDb")));
 
             var app = builder.Build();
 
@@ -26,10 +30,11 @@ namespace EGielda
 
             app.MapStaticAssets();
             app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+            app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
-                .WithStaticAssets();
-
+                pattern: "{controller=Home}/{action=Index}/{id?}");
             app.Run();
         }
     }
