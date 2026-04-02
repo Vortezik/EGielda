@@ -23,8 +23,8 @@ namespace EGielda.Areas.Admin.Controllers
         // GET: Admin/Products
         public async Task<IActionResult> Index()
         {
-            var egieldaDbContext = _context.Products.Include(p => p.Category);
-            return View(await egieldaDbContext.ToListAsync());
+            var products = _context.Products.Include(p => p.Category);
+            return View(await products.ToListAsync());
         }
 
         // GET: Admin/Products/Details/5

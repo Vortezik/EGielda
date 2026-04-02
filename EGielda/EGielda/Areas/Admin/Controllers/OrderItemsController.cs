@@ -11,22 +11,23 @@ using EGielda.Models;
 namespace EGielda.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoriesController : Controller
+    public class OrderItemsController : Controller
     {
         private readonly EgieldaDbContext _context;
 
-        public CategoriesController(EgieldaDbContext context)
+        public OrderItemsController(EgieldaDbContext context)
         {
             _context = context;
         }
 
-        // GET: Admin/Categories
+        // GET: Admin/OrderItems
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            var orderItems = _context.OrderItems.Include(o => o.Order).Include(o => o.Product);
+            return View(await orderItems.ToListAsync());
         }
 
-        // GET: Admin/Categories/Details/5
+        // GET: Admin/OrderItems/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,40 +35,45 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .Include(c => c.Products)
-                .FirstOrDefaultAsync(c => c.Id == id);
-            if (category == null)
+            var orderItem = await _context.OrderItems
+                .Include(o => o.Order)
+                .Include(o => o.Product)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (orderItem == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(orderItem);
         }
 
-        // GET: Admin/Categories/Create
+        // GET: Admin/OrderItems/Create
         public IActionResult Create()
         {
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
             return View();
         }
 
-        // POST: Admin/Categories/Create
+        // POST: Admin/OrderItems/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,ProductId,OrderId,Quantity")] OrderItem orderItem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                _context.Add(orderItem);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id", orderItem.OrderId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", orderItem.ProductId);
+            return View(orderItem);
         }
 
-        // GET: Admin/Categories/Edit/5
+        // GET: Admin/OrderItems/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +81,24 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            var orderItem = await _context.OrderItems.FindAsync(id);
+            if (orderItem == null)
             {
                 return NotFound();
             }
-            return View(category);
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id", orderItem.OrderId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", orderItem.ProductId);
+            return View(orderItem);
         }
 
-        // POST: Admin/Categories/Edit/5
+        // POST: Admin/OrderItems/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ProductId,OrderId,Quantity")] OrderItem orderItem)
         {
-            if (id != category.Id)
+            if (id != orderItem.Id)
             {
                 return NotFound();
             }
@@ -99,12 +107,12 @@ namespace EGielda.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    _context.Update(orderItem);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (!OrderItemExists(orderItem.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +123,12 @@ namespace EGielda.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id", orderItem.OrderId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", orderItem.ProductId);
+            return View(orderItem);
         }
 
-        // GET: Admin/Categories/Delete/5
+        // GET: Admin/OrderItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +136,36 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var orderItem = await _context.OrderItems
+                .Include(o => o.Order)
+                .Include(o => o.Product)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (orderItem == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(orderItem);
         }
 
-        // POST: Admin/Categories/Delete/5
+        // POST: Admin/OrderItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var orderItem = await _context.OrderItems.FindAsync(id);
+            if (orderItem != null)
             {
-                _context.Categories.Remove(category);
+                _context.OrderItems.Remove(orderItem);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool OrderItemExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _context.OrderItems.Any(e => e.Id == id);
         }
     }
 }

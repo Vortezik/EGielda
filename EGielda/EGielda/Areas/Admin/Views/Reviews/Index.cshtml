@@ -1,0 +1,39 @@
+﻿@model IEnumerable<EGielda.Models.Review>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2 class="mb-4">Manage Reviews</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">+ Add Review </a>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Product</th>
+                <th>User</th>
+                <th>Rating</th>
+                <th>Content</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                <td>@r.Product?.Name</td>
+                <td>@r.User?.Email</td>
+                <td>@r.Rating ⭐</td>
+                <td>@r.Content</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@r.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

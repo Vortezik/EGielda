@@ -1,0 +1,48 @@
+﻿@model EGielda.Models.Cart
+
+@{
+    ViewData["Title"] = "Details";
+    var total = Model.CartItems.Sum(i => i.Quantity * (i.Product?.Price ?? 0));
+}
+
+<h1 class="mb-4">Cart #@Model.Id</h1>
+
+<div class="card shadow-sm p-4 mb-4">
+    <h5 class="mb-3">Cart Info</h5>
+    <p><strong>User ID:</strong> @Model.UserId</p>
+    <p><strong>Created:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
+</div>
+
+<div class="card shadow-sm p-4">
+    <h5 class="mb-3">Items</h5>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CartItems)
+                {
+                    <tr>
+                        <td>@item.Product?.Name</td>
+                        <td>@item.Product?.Price zł</td>
+                        <td>@item.Quantity</td>
+                        <td>@(item.Quantity * (item.Product?.Price ?? 0)) zł</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-end mt-3">
+        <h5>Total: <span class="text-success">@total zł</span></h5>
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Back</a>

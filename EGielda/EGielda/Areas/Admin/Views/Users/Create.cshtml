@@ -1,10 +1,10 @@
-﻿@model EGielda.Models.Category
+﻿@model EGielda.Models.User
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1 class="mb-4">Create</h1>
+<h2 class="mb-4">Create</h2>
 
 <div class="card shadow-sm p-4" style="max-width: 500px;">
     <form asp-action="Create">
@@ -16,6 +16,11 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" type="email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
         <div class="d-flex gap-2">
             <button type="submit" class="btn btn-success">Create</button>
             <a asp-action="Index" class="btn btn-secondary">Back</a>

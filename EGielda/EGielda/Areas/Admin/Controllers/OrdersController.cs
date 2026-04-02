@@ -11,22 +11,23 @@ using EGielda.Models;
 namespace EGielda.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoriesController : Controller
+    public class OrdersController : Controller
     {
         private readonly EgieldaDbContext _context;
 
-        public CategoriesController(EgieldaDbContext context)
+        public OrdersController(EgieldaDbContext context)
         {
             _context = context;
         }
 
-        // GET: Admin/Categories
+        // GET: Admin/Orders
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            var orders = _context.Orders.Include(o => o.User);
+            return View(await orders.ToListAsync());
         }
 
-        // GET: Admin/Categories/Details/5
+        // GET: Admin/Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,40 +35,46 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .Include(c => c.Products)
-                .FirstOrDefaultAsync(c => c.Id == id);
-            if (category == null)
+            var order = await _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .FirstOrDefaultAsync(o => o.Id == id);
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(order);
         }
 
-        // GET: Admin/Categories/Create
+        // GET: Admin/Orders/Create
         public IActionResult Create()
         {
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
-        // POST: Admin/Categories/Create
+        // POST: Admin/Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,CreatedAt,UserId")] Order order)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                order.CreatedAt = DateTime.Now;
+
+                _context.Add(order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", order.UserId);
+            return View(order);
         }
 
-        // GET: Admin/Categories/Edit/5
+        // GET: Admin/Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +82,23 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
             {
                 return NotFound();
             }
-            return View(category);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", order.UserId);
+            return View(order);
         }
 
-        // POST: Admin/Categories/Edit/5
+        // POST: Admin/Orders/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CreatedAt,UserId")] Order order)
         {
-            if (id != category.Id)
+            if (id != order.Id)
             {
                 return NotFound();
             }
@@ -99,12 +107,12 @@ namespace EGielda.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    _context.Update(order);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (!OrderExists(order.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +123,11 @@ namespace EGielda.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", order.UserId);
+            return View(order);
         }
 
-        // GET: Admin/Categories/Delete/5
+        // GET: Admin/Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +135,35 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var order = await _context.Orders
+                .Include(o => o.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(order);
         }
 
-        // POST: Admin/Categories/Delete/5
+        // POST: Admin/Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var order = await _context.Orders.FindAsync(id);
+            if (order != null)
             {
-                _context.Categories.Remove(category);
+                _context.Orders.Remove(order);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool OrderExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _context.Orders.Any(e => e.Id == id);
         }
     }
 }
