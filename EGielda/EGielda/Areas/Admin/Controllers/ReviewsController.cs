@@ -11,22 +11,23 @@ using EGielda.Models;
 namespace EGielda.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoriesController : Controller
+    public class ReviewsController : Controller
     {
         private readonly EgieldaDbContext _context;
 
-        public CategoriesController(EgieldaDbContext context)
+        public ReviewsController(EgieldaDbContext context)
         {
             _context = context;
         }
 
-        // GET: Admin/Categories
+        // GET: Admin/Reviews
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            var reviews = _context.Reviews.Include(r => r.Product).Include(r => r.User);
+            return View(await reviews.ToListAsync());
         }
 
-        // GET: Admin/Categories/Details/5
+        // GET: Admin/Reviews/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,40 +35,45 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .Include(c => c.Products)
-                .FirstOrDefaultAsync(c => c.Id == id);
-            if (category == null)
+            var review = await _context.Reviews
+                .Include(r => r.Product)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (review == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(review);
         }
 
-        // GET: Admin/Categories/Create
+        // GET: Admin/Reviews/Create
         public IActionResult Create()
         {
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
-        // POST: Admin/Categories/Create
+        // POST: Admin/Reviews/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,ProductId,UserId,Rating,Content")] Review review)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                _context.Add(review);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", review.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", review.UserId);
+            return View(review);
         }
 
-        // GET: Admin/Categories/Edit/5
+        // GET: Admin/Reviews/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +81,24 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            var review = await _context.Reviews.FindAsync(id);
+            if (review == null)
             {
                 return NotFound();
             }
-            return View(category);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", review.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", review.UserId);
+            return View(review);
         }
 
-        // POST: Admin/Categories/Edit/5
+        // POST: Admin/Reviews/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ProductId,UserId,Rating,Content")] Review review)
         {
-            if (id != category.Id)
+            if (id != review.Id)
             {
                 return NotFound();
             }
@@ -99,12 +107,12 @@ namespace EGielda.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    _context.Update(review);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (!ReviewExists(review.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +123,12 @@ namespace EGielda.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", review.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", review.UserId);
+            return View(review);
         }
 
-        // GET: Admin/Categories/Delete/5
+        // GET: Admin/Reviews/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,34 +136,36 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var review = await _context.Reviews
+                .Include(r => r.Product)
+                .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (review == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(review);
         }
 
-        // POST: Admin/Categories/Delete/5
+        // POST: Admin/Reviews/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var review = await _context.Reviews.FindAsync(id);
+            if (review != null)
             {
-                _context.Categories.Remove(category);
+                _context.Reviews.Remove(review);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool ReviewExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _context.Reviews.Any(e => e.Id == id);
         }
     }
 }

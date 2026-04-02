@@ -1,18 +1,19 @@
-﻿@model IEnumerable<EGielda.Models.Category>
+﻿@model IEnumerable<EGielda.Models.Cart>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1 class="mb-4">Manage Categories</h1>
+<h1 class="mb-4">Manage Carts</h1>
 
-<a asp-action="Create" class="btn btn-success mb-3">+ Add Category</a>
+<a asp-action="Create" class="btn btn-success mb-3">+ Add Cart</a>
 
 <div class="table-responsive">
     <table class="table table-hover align-middle">
         <thead class="table-dark">
             <tr>
-                <th>Name</th>
+                <th>User ID</th>
+                <th>Created At</th>
                 <th style="width: 200px;"></th>
             </tr>
         </thead>
@@ -20,10 +21,8 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td class="fw-semibold">
-                        @item.Name
-                        <span class="badge bg-secondary">@item.Products?.Count</span>
-                        </td>
+                    <td>@item.UserId</td>
+                    <td>@item.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>

@@ -1,0 +1,15 @@
+﻿@model EGielda.Models.User
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2 class="mb-4">Details</h2>
+
+<div class="card p-3">
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary mt-3">Edit</a>
+<a asp-action="Index" class="btn btn-secondary mt-3">Back</a>

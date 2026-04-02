@@ -4,21 +4,28 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1 class="mb-4">@Model.Name</h1>
 
-<div>
-    <h4>Category</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
+<div class="card shadow-sm p-4 mb-4">
+    <h5 class="mb-3">Category Info</h5>
+    <p><strong>Name:</strong> @Model.Name</p>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@if (Model.Products != null && Model.Products.Any())
+{
+    <div class="card shadow-sm p-4">
+        <h5 class="mb-3">Products in this category</h5>
+
+        <ul class="list-group">
+            @foreach (var product in Model.Products)
+            {
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>@product.Name</span>
+                    <span class="text-muted">@product.Price zł</span>
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Back</a>

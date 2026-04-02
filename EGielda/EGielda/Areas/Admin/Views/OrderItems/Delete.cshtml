@@ -1,0 +1,24 @@
+﻿@model EGielda.Models.OrderItem
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<div class="alert alert-danger">
+    Are you sure you want to delete this item?
+</div>
+
+<div class="card p-3 mb-3">
+    <p><strong>Product:</strong> @Model.Product?.Name</p>
+    <p><strong>Order ID:</strong> #@Model.OrderId</p>
+    <p><strong>Quantity:</strong> @Model.Quantity</p>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

@@ -18,10 +18,4 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Admin\Views\Cart\" />
-    <Folder Include="Areas\Admin\Views\User\" />
-    <Folder Include="Areas\Admin\Views\Order\" />
-  </ItemGroup>
-
 </Project>
