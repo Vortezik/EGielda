@@ -23,8 +23,8 @@ namespace EGielda.Areas.Admin.Controllers
         // GET: Admin/Orders
         public async Task<IActionResult> Index()
         {
-            var orders = _context.Orders.Include(o => o.User);
-            return View(await orders.ToListAsync());
+            var order = _context.Orders.Include(o => o.User);
+            return View(await order.ToListAsync());
         }
 
         // GET: Admin/Orders/Details/5

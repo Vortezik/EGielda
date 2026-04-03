@@ -23,10 +23,9 @@ namespace EGielda.Areas.Admin.Controllers
         // GET: Admin/Carts
         public async Task<IActionResult> Index()
         {
-            var carts = _context.Carts.Include(c => c.CartItems)
-            .ThenInclude(ci => ci.Product);
+            var cart = _context.Carts.Include(c => c.CartItems).ThenInclude(ci => ci.Product);
 
-            return View(await _context.Carts.ToListAsync());
+            return View(await cart.ToListAsync());
         }
 
         // GET: Admin/Carts/Details/5

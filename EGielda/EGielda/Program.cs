@@ -30,8 +30,13 @@ namespace EGielda
 
             app.MapStaticAssets();
             app.MapControllerRoute(
+                name: "admin-root",
+                pattern: "Admin",
+                defaults: new { area = "Admin", controller = "AdminHome", action = "Index" }
+            );
+            app.MapControllerRoute(
                 name: "areas",
-                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                pattern: "{area:exists}/{controller=AdminHome}/{action=Index}/{id?}");
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

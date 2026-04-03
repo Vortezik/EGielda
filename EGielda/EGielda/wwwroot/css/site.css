@@ -27,6 +27,19 @@ h1, h2, h3 {
     font-weight: 600;
 }
 
+nav {
+    background-color: #00883585;
+}
+
+footer {
+    border-top: thin;
+    height: 60px;
+    background-color: #00883585;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .card {
     cursor: pointer;
     border-radius: 10px;

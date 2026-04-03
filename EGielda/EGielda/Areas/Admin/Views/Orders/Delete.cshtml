@@ -4,21 +4,21 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1 class="mb-4 text-danger">Delete</h1>
+<h2 class="mb-4 text-danger">Delete</h2>
 
-<div class="card shadow-sm p-4">
-    <p>Are you sure you want to delete this order?</p>
-
-    <ul class="list-group mb-3">
-        <li class="list-group-item"><strong>ID:</strong> @Model.Id</li>
-        <li class="list-group-item"><strong>User:</strong> @Model.User?.Email</li>
-        <li class="list-group-item"><strong>Date:</strong> @Model.CreatedAt</li>
-    </ul>
-
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-
-        <button type="submit" class="btn btn-danger">Delete</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
+<div class="alert alert-danger">
+    Are you sure you want to delete this order?
 </div>
+
+<div class="card shadow-sm p-3 mb-3">
+    <p><strong>ID:</strong> #@Model.Id</p>
+    <p><strong>User:</strong> @Model.User?.Email</p>
+    <p><strong>Date:</strong> @Model.CreatedAt</p>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
