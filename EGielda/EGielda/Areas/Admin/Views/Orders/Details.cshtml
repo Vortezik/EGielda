@@ -5,10 +5,11 @@
     var total = Model.OrderItems.Sum(i => i.Quantity * (i.Product?.Price ?? 0));
 }
 
-<h1 class="mb-4">Order #@Model.Id</h1>
+<h2 class="mb-4">Details</h2>
 
 <div class="card shadow-sm p-4 mb-4">
     <h5 class="mb-3">Order Info</h5>
+    <p><strong>Order ID:</strong> #@Model.Id</p>
     <p><strong>User:</strong> @Model.User?.Email</p>
     <p><strong>Date:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
 </div>

@@ -16,21 +16,21 @@
                 <th>User</th>
                 <th>Rating</th>
                 <th>Content</th>
-                <th></th>
+                <th style="width: 200px;"></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var r in Model)
+            @foreach (var item in Model)
             {
                 <tr>
-                <td>@r.Product?.Name</td>
-                <td>@r.User?.Email</td>
-                <td>@r.Rating ⭐</td>
-                <td>@r.Content</td>
+                    <td>@item.Product?.Name</td>
+                    <td>@item.User?.Email</td>
+                    <td>@item.Rating ⭐</td>
+                    <td>@item.Content</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-primary">Edit</a>
-                    <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@r.Id" class="btn btn-sm btn-danger">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
                 </td>
                 </tr>
             }

@@ -4,15 +4,16 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2 class="mb-4">Details</h2>
 
-<div class="card p-4">
+<div class="card shadow-sm p-4 mb-4">
+    <h5 class="mb-3">Review Info</h5>
     <p><strong>Product:</strong> @Model.Product?.Name</p>
     <p><strong>User:</strong> @Model.User?.Email</p>
     <p><strong>Rating:</strong> @Model.Rating ⭐</p>
     <p>
         <strong>Content:</strong></p>
-    <p>@Model.Content</p>
+    <p> @Model.Content</p>
 </div>
 
 <div class="mt-3">
