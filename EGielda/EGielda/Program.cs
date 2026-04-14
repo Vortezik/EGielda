@@ -1,4 +1,5 @@
 using EGielda.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 namespace EGielda
 {
@@ -12,6 +13,12 @@ namespace EGielda
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<EgieldaDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("EGieldaDb")));
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/User/Login";
+                    options.AccessDeniedPath = "/User/Login";
+                });
 
             var app = builder.Build();
 
@@ -25,7 +32,7 @@ namespace EGielda
 
             app.UseHttpsRedirection();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();

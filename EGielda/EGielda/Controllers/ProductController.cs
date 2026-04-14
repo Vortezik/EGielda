@@ -13,14 +13,44 @@ namespace EGielda.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(
+            int? categoryId,
+            decimal? minPrice,
+            decimal? maxPrice,
+            string search)
         {
             ViewData["ShowSidebar"] = true;
 
-            var products = _context.Products.Include(p => p.Category)
-            .ToList();
+            ViewBag.Categories = await _context.Categories.ToListAsync();
 
-            return View(products);
+            var products = _context.Products.Include(p => p.Category)
+            .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+                products = products.Where(p => p.Name.Contains(search));
+
+            if (categoryId.HasValue)
+                products = products.Where(p => p.CategoryId == categoryId);
+
+            if (minPrice.HasValue)
+                products = products.Where(p => p.Price >= minPrice);
+
+            if (maxPrice.HasValue)
+                products = products.Where(p => p.Price <= maxPrice);
+
+            return View(await products.ToListAsync());
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var product = await _context.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null)
+                return NotFound();
+
+            return View(product);
         }
     }
 }

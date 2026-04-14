@@ -19,7 +19,10 @@
                         <div class="mt-auto">
                             <p class="fw-bold">@product.Price zł</p>
                             <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary w-100"> View </a>
-                            <a asp-controller="Cart" asp-action="Add" asp-route-id="@product.Id" class="btn btn-success w-100"> Add to Cart </a>
+                            @if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@product.Id" class="btn btn-success w-100"> Add to Cart </a>
+                            }
                         </div>
                     </div>
                 </div>

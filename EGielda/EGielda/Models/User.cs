@@ -7,7 +7,12 @@ namespace EGielda.Models
         [Required]
         public string Name { get; set; }
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
+        [Required]
+        public string PasswordHash { get; set; }
+        [Required]
+        public string Role { get; set; } = "User";
 
         public ICollection<Order> Orders { get; set; }
         public ICollection<Review> Reviews { get; set; }
