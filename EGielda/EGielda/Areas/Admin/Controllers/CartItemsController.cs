@@ -13,23 +13,23 @@ namespace EGielda.Areas.Admin.Controllers
 {
     [Authorize(Roles = "Admin")]
     [Area("Admin")]
-    public class CartsController : Controller
+    public class CartItemsController : Controller
     {
         private readonly EgieldaDbContext _context;
 
-        public CartsController(EgieldaDbContext context)
+        public CartItemsController(EgieldaDbContext context)
         {
             _context = context;
         }
 
-        // GET: Admin/Carts
+        // GET: Admin/CartItems
         public async Task<IActionResult> Index()
         {
-            var cart = _context.Carts.Include(c => c.CartItems).ThenInclude(ci => ci.Product);
-            return View(await cart.ToListAsync());
+            var cartItems = _context.CartItems.Include(c => c.Cart).Include(c => c.Product);
+            return View(await cartItems.ToListAsync());
         }
 
-        // GET: Admin/Carts/Details/5
+        // GET: Admin/CartItems/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,41 +37,45 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var cart = await _context.Carts
-                .Include(c => c.CartItems)
-                .ThenInclude(ci => ci.Product)
-                .FirstOrDefaultAsync(c => c.Id == id);
-            if (cart == null)
+            var cartItem = await _context.CartItems
+                .Include(c => c.Cart)
+                .Include(c => c.Product)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (cartItem == null)
             {
                 return NotFound();
             }
 
-            return View(cart);
+            return View(cartItem);
         }
 
-        // GET: Admin/Carts/Create
+        // GET: Admin/CartItems/Create
         public IActionResult Create()
         {
+            ViewData["CartId"] = new SelectList(_context.Carts, "Id", "Id");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
             return View();
         }
 
-        // POST: Admin/Carts/Create
+        // POST: Admin/CartItems/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,CreatedAt")] Cart cart)
+        public async Task<IActionResult> Create([Bind("Id,CartId,ProductId,Quantity")] CartItem cartItem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(cart);
+                _context.Add(cartItem);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(cart);
+            ViewData["CartId"] = new SelectList(_context.Carts, "Id", "Id", cartItem.CartId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", cartItem.ProductId);
+            return View(cartItem);
         }
 
-        // GET: Admin/Carts/Edit/5
+        // GET: Admin/CartItems/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,22 +83,24 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var cart = await _context.Carts.FindAsync(id);
-            if (cart == null)
+            var cartItem = await _context.CartItems.FindAsync(id);
+            if (cartItem == null)
             {
                 return NotFound();
             }
-            return View(cart);
+            ViewData["CartId"] = new SelectList(_context.Carts, "Id", "Id", cartItem.CartId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", cartItem.ProductId);
+            return View(cartItem);
         }
 
-        // POST: Admin/Carts/Edit/5
+        // POST: Admin/CartItems/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,CreatedAt")] Cart cart)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CartId,ProductId,Quantity")] CartItem cartItem)
         {
-            if (id != cart.Id)
+            if (id != cartItem.Id)
             {
                 return NotFound();
             }
@@ -103,12 +109,12 @@ namespace EGielda.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(cart);
+                    _context.Update(cartItem);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CartExists(cart.Id))
+                    if (!CartItemExists(cartItem.Id))
                     {
                         return NotFound();
                     }
@@ -119,10 +125,12 @@ namespace EGielda.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(cart);
+            ViewData["CartId"] = new SelectList(_context.Carts, "Id", "Id", cartItem.CartId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", cartItem.ProductId);
+            return View(cartItem);
         }
 
-        // GET: Admin/Carts/Delete/5
+        // GET: Admin/CartItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,34 +138,36 @@ namespace EGielda.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var cart = await _context.Carts
+            var cartItem = await _context.CartItems
+                .Include(c => c.Cart)
+                .Include(c => c.Product)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (cart == null)
+            if (cartItem == null)
             {
                 return NotFound();
             }
 
-            return View(cart);
+            return View(cartItem);
         }
 
-        // POST: Admin/Carts/Delete/5
+        // POST: Admin/CartItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cart = await _context.Carts.FindAsync(id);
-            if (cart != null)
+            var cartItem = await _context.CartItems.FindAsync(id);
+            if (cartItem != null)
             {
-                _context.Carts.Remove(cart);
+                _context.CartItems.Remove(cartItem);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CartExists(int id)
+        private bool CartItemExists(int id)
         {
-            return _context.Carts.Any(e => e.Id == id);
+            return _context.CartItems.Any(e => e.Id == id);
         }
     }
 }

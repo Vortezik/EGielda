@@ -19,20 +19,53 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Categories</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="AdminHome" asp-action="Index">Admin</a>
-                        </li>
+                        @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="AdminHome" asp-action="Index">Admin</a>
+                                </li>
+                            }
+                        </ul>
+                    <ul class="navbar-nav ms-auto">
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-dark">Hello @User.Identity.Name</span>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">Cart</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register">Register</a>
+                            </li>
+                        }
                     </ul>
+
+                        
                 </div>
             </div>
         </nav>
@@ -45,36 +78,31 @@
 
             <aside class="col-md-3 col-lg-2 mb-4">
                  <div class="p-3 bg-white border rounded">
+                     <form asp-controller="Product" asp-action="Index" method="get">
+                        <h5 class="mb-3">Search</h5>
+                        <input type="text" name="search" class="form-control mb-4" placeholder="Search products..." />
 
-                    <h5 class="mb-3">Search</h5>
-                    <input type="text" class="form-control mb-4" placeholder="Search products..." />
+                        <h5 class="mb-3">Price</h5>
 
-                    <h5 class="mb-3">Price</h5>
+                        <input type="number" step="0.01" name="minPrice" class="form-control mb-2" placeholder="Min price" />
 
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox">
-                        <label class="form-check-label">Under 50 zł</label>
-                    </div>
+                        <input type="number" step="0.01" name="maxPrice" class="form-control mb-4" placeholder="Max price" />
 
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox">
-                        <label class="form-check-label">50–200 zł</label>
-                    </div>
+                        <h5 class="mb-3">Categories</h5>
+                        <select name="categoryId" class="form-select mb-4">
+                            <option value="">All Categories</option>
 
-                    <div class="form-check mb-4">
-                        <input class="form-check-input" type="checkbox">
-                        <label class="form-check-label">200+ zł</label>
-                    </div>
+                            @if (ViewBag.Categories != null)
+                            {
+                                foreach (var item in ViewBag.Categories)
+                                {
+                                        <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                        </select>
 
-                    <h5 class="mb-3">Categories</h5>
-                        <div class="list-group mb-3">
-                            <a asp-area="" asp-controller="Category" asp-action="Index" class="list-group-item list-group-item-action"> Electronics </a>
-                            <a asp-area="" asp-controller="Category" asp-action="Index" class="list-group-item list-group-item-action"> Clothing </a>
-                            <a asp-area="" asp-controller="Category" asp-action="Index" class="list-group-item list-group-item-action"> Books </a>
-                        </div>
-
-                    <button class="btn btn-primary w-100">Apply Filters</button>
-
+                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                    </form>
                 </div>
             </aside>
 
