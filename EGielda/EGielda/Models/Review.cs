@@ -11,5 +11,6 @@ namespace EGielda.Models
         public int Rating { get; set; }
         [Required]
         public string Content { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

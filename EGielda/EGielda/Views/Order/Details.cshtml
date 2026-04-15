@@ -1,0 +1,38 @@
+﻿@model EGielda.Models.Order
+@{
+    ViewData["Title"] = "Details";
+    decimal total = 0;
+}
+
+<h2 class="mb-4">Order #@Model.Id</h2>
+
+<p>Date: @Model.CreatedAt</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th width="120">Price</th>
+            <th width="100">Qty</th>
+            <th width="120">Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems)
+        {
+            var line = item.Product.Price * item.Quantity;
+            total += line;
+
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.Product.Price zł</td>
+                <td>@item.Quantity</td>
+                <td>@line zł</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="text-end">
+    <h4>Total: @total zł</h4>
+</div>

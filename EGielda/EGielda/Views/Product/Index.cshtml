@@ -10,23 +10,30 @@
     @foreach (var product in Model)
     {
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="text-decoration-none text-dark">
-                <div class="card product-card h-100 shadow-sm">
+            <div class="card product-card h-100 shadow-sm">
+                <a asp-action="Details" asp-route-id="@product.Id">
                     <img src="@product.ImageUrl" class="card-img-top" />
-                    <div class="card-body d-flex flex-column">
-                        <h5>@product.Name</h5>
-                        <p class="text-muted">@product.Description</p>
-                        <div class="mt-auto">
-                            <p class="fw-bold">@product.Price zł</p>
-                            <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary w-100"> View </a>
-                            @if (User.Identity != null && User.Identity.IsAuthenticated)
-                            {
-                                <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@product.Id" class="btn btn-success w-100"> Add to Cart </a>
-                            }
-                        </div>
+                </a>
+                <div class="card-body d-flex flex-column">
+                    <h5>@product.Name</h5>
+                    <div class="mt-auto">
+                        <p class="fw-bold">@product.Price zł</p>
+                        <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary w-100"> View </a>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                <input type="hidden" name="productId" value="@product.Id" />
+
+                                <button type="submit" class="btn btn-success w-100"> Add to Cart </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a asp-controller="User" asp-action="Login" class="btn btn-outline-secondary w-100"> Login to Buy </a>
+                        }
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
     }
 </div>
