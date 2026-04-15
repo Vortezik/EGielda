@@ -36,6 +36,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Categories</a>
                         </li>
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Product" asp-action="Create"> Sell </a>
+                            </li>
+                        }
                         @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
@@ -51,7 +57,11 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">Cart</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index"> Cart </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="MyOrders"> My Orders </a>
                             </li>
 
                             <li class="nav-item">

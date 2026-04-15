@@ -13,8 +13,5 @@ namespace EGielda.Models
         public string PasswordHash { get; set; }
         [Required]
         public string Role { get; set; } = "User";
-
-        public ICollection<Order> Orders { get; set; }
-        public ICollection<Review> Reviews { get; set; }
     }
 }

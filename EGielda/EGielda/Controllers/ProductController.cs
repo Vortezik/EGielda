@@ -1,5 +1,8 @@
 ﻿using EGielda.Data;
+using EGielda.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace EGielda.Controllers
@@ -45,11 +48,35 @@ namespace EGielda.Controllers
         {
             var product = await _context.Products
                 .Include(p => p.Category)
+                .Include(p => p.Reviews)
+                .ThenInclude(r => r.User)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
                 return NotFound();
 
+            return View(product);
+        }
+
+        [Authorize]
+        public IActionResult Create()
+        {
+            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name");
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Product product)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
     }
