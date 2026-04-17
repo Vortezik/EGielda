@@ -16,6 +16,7 @@ namespace EGielda.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int productId, int rating, string content)
         {
             if (rating < 1 || rating > 5 || string.IsNullOrWhiteSpace(content))
